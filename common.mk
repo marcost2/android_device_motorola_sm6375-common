@@ -280,6 +280,12 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     android.hardware.renderscript@1.0-impl
 
+# RILD
+PRODUCT_PACKAGES += \
+    android.hardware.secure_element@1.0.vendor \
+    android.hardware.secure_element@1.1.vendor \
+    android.hardware.secure_element@1.2.vendor
+
 # RFS MDM MPSS symlinks
 PRODUCT_PACKAGES += \
     rfs_mdm_mpss_readonly_vendor_fsg_symlink
