@@ -23,6 +23,8 @@ allow hal_fingerprint_default vendor_data_tzstorage_file:file create_file_perms;
 allow hal_fingerprint_default vndbinder_device:chr_file rw_file_perms;
 binder_call(hal_fingerprint_default, vndservicemanager);
 allow hal_fingerprint_default hal_fingerprint_vndservice:service_manager add;
+allow hal_fingerprint_default vendor_sysfs_touchpanel:dir r_dir_perms;
+allow hal_fingerprint_default vendor_sysfs_touchpanel:file r_file_perms;
 
 binder_call(hal_fingerprint_default, hal_fingerprint_default)
 binder_call(hal_fingerprint_default, vendor_hal_perf_default)
