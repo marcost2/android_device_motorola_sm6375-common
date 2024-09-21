@@ -1,6 +1,6 @@
 [
   {
-    "repository": "AICP/hardware_motorola",
+    "repository": "LineageOS/hardware_motorola",
     "target_path": "hardware/motorola"
   },
   {
