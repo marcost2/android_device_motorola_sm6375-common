@@ -155,8 +155,7 @@ PRODUCT_PACKAGES += \
     gnss@2.0-xtwifi-client.policy \
     libbatching \
     libgeofencing \
-    libgnss \
-    libsynergy_loc_api
+    libgnss
 
 PRODUCT_PACKAGES += \
     apdr.conf \

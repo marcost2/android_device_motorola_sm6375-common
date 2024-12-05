@@ -3,8 +3,6 @@ LOCAL_PATH := $(call my-dir)
 include $(CLEAR_VARS)
 
 LOCAL_MODULE := libsynergy_loc_api
-# activate the following line for debug purposes only, comment out for production
-#LOCAL_SANITIZE_DIAG += $(GNSS_SANITIZE_DIAG)
 
 LOCAL_MODULE_PATH_32 := $(TARGET_OUT_VENDOR)/lib
 LOCAL_MODULE_PATH_64 := $(TARGET_OUT_VENDOR)/lib64
@@ -14,6 +12,8 @@ LOCAL_VENDOR_MODULE := true
 LOCAL_SHARED_LIBRARIES := \
     libutils \
     libcutils \
+    libqmi_cci \
+    libqmi_common_so \
     libloc_core \
     libgps.utils \
     libdl \
