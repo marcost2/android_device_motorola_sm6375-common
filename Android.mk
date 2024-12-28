@@ -6,7 +6,7 @@
 
 LOCAL_PATH := $(call my-dir)
 
-ifneq ($(filter berlin berlna dubai tundra xpeng,$(TARGET_DEVICE)),)
+ifneq ($(filter bangkk corfur cypfq cypfr denver fogo fogos ibiza miami milanf penang pnangn rhodec rhodei rhodep,$(TARGET_DEVICE)),)
 subdir_makefiles=$(call first-makefiles-under,$(LOCAL_PATH))
 $(foreach mk,$(subdir_makefiles),$(info including $(mk) ...)$(eval include $(mk)))
 
