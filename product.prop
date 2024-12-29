@@ -1,5 +1,5 @@
 # Audio
-audio.record.delay=50
+audio.record.delay=180
 
 # Radio
 persist.vendor.rcs.presence.provision=0

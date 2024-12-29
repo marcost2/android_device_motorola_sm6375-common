@@ -8,6 +8,12 @@ on early-boot
     write /sys/module/subsystem_restart/parameters/disable_restart_work 0x0
 
 on init
+    chown system log /sys/fs/pstore/console-ramoops-0
+    chmod 0440 /sys/fs/pstore/console-ramoops-0
+    chown system log /sys/fs/pstore/annotate-ramoops-0
+    chmod 0640 /sys/fs/pstore/annotate-ramoops-0
+    chown system log /sys/fs/pstore/dmesg-ramoops-0
+    chmod 0640 /sys/fs/pstore/dmesg-ramoops-0
     chown system log /proc/driver/mmi_annotate
     chmod 0640 /proc/driver/mmi_annotate
 
@@ -25,6 +31,7 @@ on early-init
     # Map oem properties, this must follow
     # execution of vendor.oem-hw-sh to set
     # required properties.
+    setprop ro.carrier ${ro.boot.carrier}
     setprop ro.sf.lcd_density ${ro.boot.lcd_density}
     setprop ro.vendor.fsg-id ${ro.boot.fsg-id}
     setprop ro.vendor.hw.device ${ro.boot.device}
@@ -39,6 +46,7 @@ on early-init
     setprop ro.vendor.boot.powerup_reason ${ro.boot.powerup_reason}
     setprop ro.vendor.boot.bl_state ${ro.boot.bl_state}
     setprop ro.vendor.boot.serialno ${ro.boot.serialno}
+    setprop ro.vendor.boot.nal_id ${ro.boot.nal_id}
     setprop ro.vendor.zygote ${ro.zygote}
     setprop persist.radio.multisim.config ${persist.vendor.radio.multisim.config}
 
@@ -75,6 +83,7 @@ on post-fs && property:ro.vendor.hw.fsg_super_image=yes
 
 on post-fs
     mkdir /mnt/vendor/persist/camera 0755 vendor_tcmd vendor_tcmd
+    mkdir /mnt/vendor/persist/camera/iqtuning 0755 vendor_tcmd vendor_tcmd
     mkdir /mnt/vendor/persist/camera/dualcal 0775 camera vendor_tcmd
     mkdir /mnt/vendor/persist/camera/focus 0775 camera vendor_tcmd
     mkdir /mnt/vendor/persist/camera/ledcal 0775 camera vendor_tcmd
@@ -141,6 +150,9 @@ on post-fs
     setprop sys.sysctl.swappiness 100
 
 on post-fs-data
+    # re-lable wfd_complete with vendor_persist_wfd_file, otherwise will be vendor_persist_file
+    restorecon /mnt/vendor/persist/wfd_complete
+
     # Setup folders for security
     mkdir /mnt/vendor/persist/security 02770 drmrpc drmrpc
     mkdir /data/vendor/dbvc 0750 vendor_tcmd shell
@@ -246,6 +258,9 @@ on post-fs-data
     # Imager tuning data for camera subsystem
     mkdir /data/vendor/misc/imager 0771 camera camera
 
+    # Imager tuning metadata for camera subsystem
+    mkdir /data/vendor/misc/imager/metadata 0771 camera camera
+
     # NFC vendor data
     mkdir /data/vendor/nfc 0770 nfc nfc
 
@@ -313,17 +328,11 @@ on boot
    chown system system /sys/class/capsense/reset
    chown system system /sys/class/capsense/int_state
 
-on late-fs-charger
-    class_start early_hal
-    mount_all /vendor/etc/fstab.qcom --late
-    # Boot time fs tune
-    write /sys/block/dm-9/queue/read_ahead_kb 2048
-
 on charger
     trigger early-fs
     trigger fs
     trigger post-fs
-    trigger late-fs-charger
+    trigger late-fs
     trigger post-fs-data
     trigger moto-charger
     class_stop main
@@ -397,7 +406,16 @@ on property:ro.boot.revision=*
 service vendor.charge_only_mode /vendor/bin/charge_only_mode
     user root
     group graphics system input
-    capabilities SYS_BOOT
+    disabled
+
+service vendor.thermal-com /vendor/bin/thermal-engine --minimode
+    class main
+    user root
+    group root system oem_2907
+    socket thermal-send-client stream 0666 system oem_2907
+    socket thermal-recv-client stream 0660 system oem_2907
+    socket thermal-recv-passive-client stream 0666 system oem_2907
+    socket thermal-send-rule stream 0660 system oem_2907
     disabled
 
 # bugreport is triggered by holding down volume down, volume up and power
